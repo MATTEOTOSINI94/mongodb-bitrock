@@ -15,11 +15,9 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-
-
     @GetMapping("/delete-comment/{id}")
-    public ResponseEntity<String> findMovieById(@PathVariable String id){
-        return commentService.removeCommentById(id);
+    public ResponseEntity<String> removeCommentByEmail(@PathVariable String email){
+        return commentService.removeCommentByEmail(email);
     }
 
     @PostMapping("/save-comment")
@@ -27,11 +25,16 @@ public class CommentController {
         return commentService.saveComment(commentDTO);
     }
 
-
-    @GetMapping("/comments")
-    public ResponseEntity<List<CommentDTO>> getCommentByEmail(@RequestParam String email){
-        return commentService.getCommentByEmail(email);
+    @GetMapping("/find-comments/{email}")
+    public ResponseEntity<List<CommentDTO>> findCommentByEmail(@RequestParam String email){
+        return commentService.findCommentByEmail(email);
     }
+
+    @GetMapping("/find-comments/{date}")
+     public ResponseEntity<List<CommentDTO>> findCommentByDate(@RequestParam String date){
+        return commentService.findCommentsByDate(date);
+    }
+
 
 
 }

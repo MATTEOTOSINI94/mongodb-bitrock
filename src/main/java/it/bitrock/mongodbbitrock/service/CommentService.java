@@ -1,5 +1,6 @@
 package it.bitrock.mongodbbitrock.service;
 
+import io.vavr.control.Option;
 import it.bitrock.mongodbbitrock.dto.CommentDTO;
 import it.bitrock.mongodbbitrock.dto.transformer.CommentTransformer;
 import it.bitrock.mongodbbitrock.model.Comment;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 public class CommentService {
@@ -23,32 +25,40 @@ public class CommentService {
     @Autowired
     private CommentQueryUtils commentQueryUtils;
 
-    public ResponseEntity<String> removeCommentById(String email){
-        if(email!=null) {
-            Long countDeleted = commentRepository.removeCommentsByEmail(email);
-            return ResponseEntity.ok().body("hai cancellato "+ countDeleted +" commenti");
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    Predicate<CommentDTO> commentDTOPredicate = commentDTO -> commentDTO != null
+            && commentDTO.getName() != null
+            && commentDTO.getEmail() != null
+            && commentDTO.getMovie_id() != null
+            && commentDTO.getDate()!=null;
 
+    public ResponseEntity<String> removeCommentByEmail(String email) {
+        return Option.of(email)
+                .map(emailNotNull -> ResponseEntity
+                        .ok().body("Hai cancellato " + commentRepository.removeCommentsByEmail(email) + " commenti"))
+                .getOrElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
 
-    public ResponseEntity<CommentDTO> saveComment(CommentDTO commentDTO){
-        if(commentDTO!=null){
-            Comment comment = commentRepository.saveComment(CommentTransformer.fromCommentDTOToComment(commentDTO));
-            return ResponseEntity.ok().body(CommentTransformer.fromCommentToCommentDTO(comment));
-        }return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<CommentDTO> saveComment(CommentDTO commentDTO) {
+        return commentDTOPredicate.test(commentDTO) ? ResponseEntity.ok()
+                .body(CommentTransformer.fromCommentToCommentDTO( commentRepository.saveComment(CommentTransformer.fromCommentDTOToComment(commentDTO))))
+              : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
 
-    public ResponseEntity<List<CommentDTO>> getCommentByEmail(String email){
-        if(email!=null){
-            List<Comment> listComments = commentQueryUtils.getCommentByEmail(email);
-            if(!ObjectUtils.isEmpty(listComments)){
-                return ResponseEntity.ok().body(listComments.stream().map(CommentTransformer::fromCommentToCommentDTO).toList());
-            }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    public ResponseEntity<List<CommentDTO>> findCommentByEmail(String email) {
+        return (ResponseEntity<List<CommentDTO>>) Option.of(email)
+                .map(emailNotNull -> commentQueryUtils.getCommentByEmail(emailNotNull))
+                .map(listComments ->
+                        !ObjectUtils.isEmpty(listComments) ? ResponseEntity.ok().body(listComments.stream().map(CommentTransformer::fromCommentToCommentDTO).toList())
+                                : ResponseEntity.status(HttpStatus.NOT_FOUND).build()).getOrElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+
     }
+
+      public ResponseEntity<List<CommentDTO>> findCommentsByDate(String date) {
+        return ServiceUtils.isValidDate(date) ? ResponseEntity.ok(commentQueryUtils.findCommentByDate(date)
+                .stream().map(CommentTransformer::fromCommentToCommentDTO).toList()) :
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
 }

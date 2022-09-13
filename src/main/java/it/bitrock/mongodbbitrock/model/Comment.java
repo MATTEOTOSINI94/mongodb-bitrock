@@ -8,13 +8,13 @@ import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @ToString
-
 @Document("comments")
 public class Comment {
 
@@ -24,6 +24,7 @@ public class Comment {
     private String name;
     @BsonProperty("email")
     private String email;
+    @Field(value = "movie_id")
     @BsonProperty("movie_id")
     private ObjectId movieId;
     @BsonProperty("date")

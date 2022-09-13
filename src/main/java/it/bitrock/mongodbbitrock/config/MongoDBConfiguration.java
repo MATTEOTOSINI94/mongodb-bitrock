@@ -23,7 +23,9 @@ public class MongoDBConfiguration {
 
 
     @Bean
-    public MongoDatabase mongoDatabase(@Value("${spring.data.mongodb.uri}") String connectionString,@Value("${spring.data.mongodb.database}") String database) {
+    public MongoDatabase mongoDatabase(
+            @Value("${spring.data.mongodb.uri}") String connectionString,
+            @Value("${spring.data.mongodb.database}") String database) {
         return MongoClients.create(mongoClientSettings(connectionString)).getDatabase(database);
     }
 

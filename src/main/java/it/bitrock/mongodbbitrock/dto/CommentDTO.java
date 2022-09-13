@@ -15,7 +15,7 @@ public class CommentDTO {
     private String id;
     private String name;
     private String email;
-    private String movieId;
+    private String movie_id;
     private LocalDateTime date;
     private String text;
 
@@ -23,20 +23,20 @@ public class CommentDTO {
 
     }
 
-    public CommentDTO(String id, String name, String email, String movieId, LocalDateTime date, String text) {
+    public CommentDTO(String id, String name, String email, String movie_id, LocalDateTime date, String text) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.movieId = movieId;
+        this.movie_id = movie_id;
         this.date = date;
         this.text = text;
     }
 
-    public CommentDTO(String name, String email, String movieId, LocalDateTime date, String text) {
+    public CommentDTO(String name, String email, String movie_id, LocalDateTime date, String text) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.movieId = movieId;
+        this.movie_id = movie_id;
         this.date = date;
         this.text = text;
     }

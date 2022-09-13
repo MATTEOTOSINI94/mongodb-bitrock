@@ -6,10 +6,6 @@ import it.bitrock.mongodbbitrock.model.Movie;
 
 public class MovieTransformer {
 
-    private MovieTransformer(){
-
-    }
-
     public static MovieDTO fromMovieToMovieDTO(Movie movie){
         return new MovieDTO(
                 movie.getId().toHexString(),
@@ -27,6 +23,6 @@ public class MovieTransformer {
                 AwardsTransformer.fromAwardsToAwardsDTO(movie.getAwards()),
                 movie.getLastUpdated(),
                 movie.getImdb(),
-               TomatoesTransformer.fromTomatoesToTomatoesDTO(movie.getTomatoes()));
+                TomatoesTransformer.fromTomatoesToTomatoesDTO(movie.getTomatoes()));
     }
 }

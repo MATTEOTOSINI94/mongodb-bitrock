@@ -1,6 +1,7 @@
 package it.bitrock.mongodbbitrock.dto.transformer;
 
 
+import io.vavr.control.Option;
 import it.bitrock.mongodbbitrock.dto.TomatoesDTO;
 import it.bitrock.mongodbbitrock.dto.ViewerDTO;
 import it.bitrock.mongodbbitrock.model.Tomatoes;
@@ -11,9 +12,9 @@ public class TomatoesTransformer {
 
     }
     public static TomatoesDTO fromTomatoesToTomatoesDTO(Tomatoes tomatoes){
-        if (tomatoes != null) {
-            return new TomatoesDTO(new ViewerDTO(tomatoes.getViewer().getRating(), tomatoes.getViewer().getNumReviews()), tomatoes.getLastUpdated());
-        }
-        return new TomatoesDTO();
+        return Option.of(tomatoes).map(tomatoesNotNull ->
+                new TomatoesDTO(new ViewerDTO(tomatoesNotNull.getViewer().getRating(),
+                        tomatoesNotNull.getViewer().getNumReviews()),
+                        tomatoesNotNull.getLastUpdated())).getOrElse(new TomatoesDTO());
     }
 }

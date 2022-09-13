@@ -1,7 +1,7 @@
 package it.bitrock.mongodbbitrock;
 
 import it.bitrock.mongodbbitrock.controller.MovieController;
-import it.bitrock.mongodbbitrock.dto.MovieDTO;
+
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 
 @SpringBootTest
 public class MovieControllerTest {
@@ -51,14 +50,16 @@ public class MovieControllerTest {
 
     @Test
     void findMoviesByCommentEmailPositiveTest(){
-        Assertions.assertEquals(movieController.findMoviesByCommentEmail("s.csssom").getBody(),new ArrayList<>());
+         Assertions.assertEquals(movieController.findMoviesByCommentEmail("shawn_mcCormick@fakegmail.com").getBody().size(),10);    }
+
+    @Test
+    void findMoviesByCommentEmailNegativeTest(){
+        Assertions.assertEquals(movieController.findMoviesByCommentEmail("Shawn_mcCormick@faKeGmAiL.COM").getBody().size(),10);
     }
 
-     @Test
-    void findAllMovieByCommentEmail(){
-        movieController.findMoviesByCommentEmail("shawn_mccormick@fakegmail.com").getBody().iterator().forEachRemaining(movie-> System.out.println(movie));
-        Assertions.assertEquals(movieController.findMoviesByCommentEmail("shawn_mccormick@fakegmail.com").getBody().size(),10);
-
+    @Test
+    void findMoviesByCommentEmailExceptionTest(){
+        Assertions.assertEquals(movieController.findMoviesByCommentEmail(null).getStatusCode(),HttpStatus.BAD_REQUEST);
     }
 
       @Test

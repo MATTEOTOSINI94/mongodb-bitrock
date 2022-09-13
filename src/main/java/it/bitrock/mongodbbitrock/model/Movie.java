@@ -45,8 +45,9 @@ public class Movie {
     private Awards awards;
     @BsonProperty("lastupdated")
     private String lastUpdated;
- //   @BsonProperty("year")
- //   private String year;
+
+    @BsonProperty("year")
+    private Integer year;
     @BsonProperty("imdb")
     private Imdb imdb;
     @BsonProperty("tomatoes")

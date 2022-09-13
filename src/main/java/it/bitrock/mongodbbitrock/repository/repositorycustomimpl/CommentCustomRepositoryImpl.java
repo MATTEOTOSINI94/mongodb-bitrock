@@ -16,8 +16,6 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     private MongoTemplate mongoTemplate;
 
 
-
-
     @Override
     public void findAndUpdateComment(String id, String text) {
         Query query= new Query();
@@ -28,8 +26,8 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     }
 
     @Override
-    public void findAndRemoveComment(String id) {
-        mongoTemplate.findAndRemove(new Query(Criteria.where("_id").is(id)),Comment.class);
+    public void findAndRemoveComment(String email) {
+        mongoTemplate.findAndRemove(new Query(Criteria.where("email").is(email)),Comment.class);
     }
 
     @Override
@@ -52,7 +50,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     @Override
     public void upsertComment(String id, String text) {
     Query query= new Query();
-    query.addCriteria(Criteria.where("id").is(510));
+    query.addCriteria(Criteria.where("_id").is(id));
     Update update = new Update();
     update.set("text", text );
     mongoTemplate.upsert(query, update, Comment.class);

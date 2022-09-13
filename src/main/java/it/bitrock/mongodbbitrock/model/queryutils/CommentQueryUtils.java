@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 @Service
 public class CommentQueryUtils {
 
@@ -18,18 +21,16 @@ public class CommentQueryUtils {
     private MongoDatabase mongoDatabase;
 
     public List<Comment> getCommentByEmail(String email) {
-        
         return mongoDatabase.getCollection("comments", Comment.class)
                 .find(new Document("email", email)).into(new ArrayList<>());
     }
 
-    public List<Comment> findCommentByDate(String date) {
-        if (ServiceUtils.isValidDate(date)) {
 
+    public List<Comment> findCommentByDate(String date) {
             return mongoDatabase.getCollection("comments", Comment.class)
                     .find(Filters.gte("date", ServiceUtils.transformStringToLocalDateTime(date)))
                     .limit(50).into(new ArrayList<>());
-        }
-        return null;
     }
+
+
 }
